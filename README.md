@@ -6,7 +6,8 @@ This example contains a frontend and backend:
 - The frontend is an [Express](https://expressjs.com/) using an MVC structure and [Pug](https://pugjs.org/api/getting-started.html) for templating.
 - The backend **Hotel Reservation Service** example is a GraphQL API providing the ability to create and list reservations as well as the ability to list available rooms for a given date range.
 
-For a solution that is more scalable than this, please checkout my [React-FastAPI-TortoiseORM](https://github.com/WillSams/acme-hotel-react-fastapi-tortoise/)) version of this same idea.
+For a solution that is more scalable than this, please checkout my [React-FastAPI-TortoiseORM](https://github.com/WillSams/acme-hotel-react-fastapi-tortoiseorm/) version of this same idea.
+
 
 Booked reservations are listed via the API. Each reservation request were processed in the order provided as if they were real-time requests. The following rules are observed:
 
@@ -173,10 +174,12 @@ To run these tests, simply execute `npm run test:backend`.
 - Enforce typing:
     - JavaScript -> I'll eventually introduce [JSDoc](https://jsdoc.app/) as an alternative to TypeScript.
     - Python -> I need to sprinkle more type annotations.  Also, I need to evaluate if usage of *Union* and *Optional* are more helpful that they look.
+- Add GitHub Action for validating pull requests
 - Add GitHub Actions for deployment to AWS
 - Add Pulumi or Amazon CDK artifacts for managing AWS infrastructure supporting our code.
     - Deploy frontend as [ECS](https://aws.amazon.com/ecs/) service.
     - Deploy backend as [Lambda](https://aws.amazon.com/lambda/) function.
+- Add Cypress for testing the UI
 
 ## License
 
