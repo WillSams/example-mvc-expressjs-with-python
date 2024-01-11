@@ -1,0 +1,26 @@
+extends ../layouts/default.pug
+
+block content
+  article
+    h2
+      small #{title}
+    h4
+      hr  
+      form#new_reservation_form(role='form', method='post', action='/reservation/create')
+        .form-group
+          label.col-md-2(for='room_id') Room:
+          select.col-md-9(name='room_id', placeholder='Room #', required='')
+            each room_id in roomIds
+              option(value=room_id)= room_id
+          br 
+          label.col-md-2(for='start_date') Start Date: 
+          input#start_date.col-md-9(type='date', name='start_date', placeholder='Start Date', required='')
+          br 
+          label.col-md-2(for='end_date') End Date: 
+          input#end_date.col-md-9(type='date', name='end_date', placeholder='End Date', required='')
+          br 
+          input.col-md-9(type='hidden', name='company_id', value='1')
+          br 
+        input(type='submit', value='Submit').btn.btn-success
+
+

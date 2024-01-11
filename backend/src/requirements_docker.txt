@@ -1,0 +1,8 @@
+ariadne==0.21
+fastapi==0.108.0
+psycopg2-binary==2.9.9
+pydantic==2.5.3
+python-jose==3.3.0
+SQLAlchemy==2.0.24
+uvicorn==0.25.0
+

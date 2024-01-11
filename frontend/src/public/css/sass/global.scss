@@ -1,0 +1,26 @@
+body{
+  @include body-font;
+  
+  main { margin-top: 100px; }
+  
+  /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+  .row.content { height: 1500px }
+  .label { white-space: nowrap; margin-left: 15px; margin-right: 15px; }
+  .large-label { white-space: nowrap; margin-left: 125px; margin-right: 125px; }
+
+  #privacy-content, #terms-content { font-size: 12px; }
+  
+  /* Set black background color, white text and some padding */
+  footer {
+    background-color: #555;
+    color: white;
+    padding: 15px;
+    margin: auto auto;
+    text-align: center;
+  }
+  
+  /* On small screens, set height to auto for sidenav and grid */
+  @media screen and (max-width: 767px) {
+    .row.content {height: auto;} 
+  }
+}

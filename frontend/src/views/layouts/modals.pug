@@ -1,0 +1,43 @@
+//- Modal for Success Message
+.modal.fade#successModal(tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5.modal-title#successModalLabel Success
+        button(type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reloadPage()")
+          span(aria-hidden="true") &times;
+      .modal-body
+        //- Display the message from the URL parameter
+        span#successMessage
+
+//- Modal for Failure Message
+.modal.fade#failureModal(tabindex="-1" role="dialog" aria-labelledby="failureModalLabel" aria-hidden="true")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5.modal-title#failureModalLabel Error
+        button(type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reloadPage()")
+          span(aria-hidden="true") &times;
+      .modal-body
+        //- Display the message from the URL parameter
+        span#failureMessage
+
+block js
+  script.
+    function reloadPage() {
+      window.location.href= '/home'
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const successParam = urlParams.get('success');
+      const messageParam = urlParams.get('message');
+
+      if (successParam === 'false') {
+        $('#failureMessage').text(messageParam || 'Failed. Please try again.');
+        $('#failureModal').modal('show');
+      } else if (successParam === 'true') {
+        $('#successMessage').text(messageParam || 'Success!');
+        $('#successModal').modal('show');
+      }
+    });

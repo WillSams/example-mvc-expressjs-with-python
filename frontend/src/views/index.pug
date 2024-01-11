@@ -1,0 +1,36 @@
+extends layouts/default.pug
+
+mixin displayReservation(reservation)    
+  form(role="form", method="post" action=`/reservation/${reservation.id}/delete?_method=DELETE`)
+    input(type="hidden" name="_method" value="DELETE")
+    span.label #{reservation.room_id}
+    span.label #{moment(reservation.checkin_date).format('YYYY-MM-DD')}
+    span.label #{moment(reservation.checkout_date).format('YYYY-MM-DD')}
+    a(href=`/reservation/${reservation.id}`)
+      span.btn.btn-primary Show
+      | &nbsp;&nbsp;
+    a(href=`/reservation/${reservation.id}/edit`)
+      span.btn.btn-info Edit
+      | &nbsp;&nbsp;
+    input(type="submit", value="Delete").btn.btn-danger
+
+block content
+  include layouts/modals.pug
+  article
+    h2
+      small #{title} &nbsp; &nbsp;
+      a(href="/reservation/new"): | Add
+    hr
+    span.large-label Room Identifier
+    span.label Start Date
+    span.label End Date
+    hr
+    if reservations && reservations.length > 0
+      each reservation in reservations
+        +displayReservation(reservation)
+        if reservations.last !== reservation
+          hr
+    else
+      p No reservations available.
+
+    

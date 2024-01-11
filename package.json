@@ -1,0 +1,24 @@
+{
+    "scripts": {
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:db-baseline": "cd db && npm run refresh && npm run seed",
+        "dev:frontend": "cd frontend && npm run watch",
+        "dev:backend": "cd backend && python src/main.py",
+        "lint": "eslint frontend --ignore-pattern 'public/' --ignore-pattern 'build/'",
+        "test:backend": "cd backend && ./run_tests.sh",
+        "test:frontend": "cd frontend && npm run test",
+        "prepare": "husky install"       
+    },
+    "dependencies": {
+        "concurrently": "^6.5.1"
+    },
+    "devDependencies": {
+        "eslint": "^7.26.0",
+        "husky": "^8.0.3",
+        "prettier": "^3.1.1"
+    },
+    "prettier": {
+        "singleQuote": true,
+        "trailingComma": "es5"
+    }
+}

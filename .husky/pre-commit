@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+./node_modules/.bin/prettier frontend/src/**/*.js --single-quote --trailing-comma es5 --write
+./node_modules/.bin/eslint frontend/src --ignore-pattern 'frontend/src/public/' --fix
+git add .
