@@ -181,6 +181,7 @@ To run these tests, simply execute `npm run test:backend`.
     - Deploy frontend as [ECS](https://aws.amazon.com/ecs/) service.
     - Deploy backend as [Lambda](https://aws.amazon.com/lambda/) function.
 - Add Cypress for testing the UI
+- Use Strawberry or Apollo instead of Ariadne
 
 ## License
 
