@@ -60,7 +60,9 @@ curl http://localhost:$API_PORT/development/graphql \
 
 **Open API UI Usage**:
 
-Navigate to [http://localhost:$API_PORT/docs].
+Navigate to [http://localhost:$API_PORT/docs](http://localhost:$API_PORT/docs).
+
+![text](./frontend/src/public/img/openapi_example.png)
 
 **Table of Contents**:
 
@@ -71,8 +73,7 @@ Navigate to [http://localhost:$API_PORT/docs].
     - [Create the Database](#create-the-database)
 * [Development](#development)
 * [Testing](#testing)
-* [Troubleshooting](#troubleshooting)
-    - [Docker Image](#docker-image)
+* [TODO](#todo)
 * [License](#license)
 
 ## Prerequisites
@@ -80,7 +81,7 @@ Navigate to [http://localhost:$API_PORT/docs].
 To run the service, you will need to install the following tools.
 
 * [Python](https://www.python.org/downloads/)
-* [NodeJS](https://nodejs.org/en/) - Used for migrations ([Knex.js](https://knexjs.org/)). 
+* [NodeJS](https://nodejs.org/en/)
 * [Docker](https://www.docker.com/)
 
 The below are optional but highly recommended:
