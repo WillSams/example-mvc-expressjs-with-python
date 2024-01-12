@@ -1,13 +1,11 @@
 # Acme Hotel Example - Express, FastAPI, Sqlalchemy
 
-acme-hotel-express-fastapi-sqlalchemy/
 This example contains a frontend and backend:
 
-- The frontend is an [Express](https://expressjs.com/) using an MVC structure and [Pug](https://pugjs.org/api/getting-started.html) for templating.
-- The backend **Hotel Reservation Service** example is a GraphQL API providing the ability to create and list reservations as well as the ability to list available rooms for a given date range.
+- The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
+- The backend is a [GraphQL API](https://graphql.org) providing the ability to create, delete, and list reservatios plus available rooms for a given date range.
 
 For a solution that is more scalable than this, please checkout my [React-FastAPI-TortoiseORM](https://github.com/WillSams/acme-hotel-react-fastapi-tortoiseorm/) version of this same idea.
-
 
 Booked reservations are listed via the API. Each reservation request were processed in the order provided as if they were real-time requests. The following rules are observed:
 
