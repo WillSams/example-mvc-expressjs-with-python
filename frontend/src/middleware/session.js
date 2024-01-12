@@ -5,8 +5,6 @@ const authSession = async (req, res, next) => {
       const response = await fetch(`${process.env.RESERVATION_API}/token`);
       const backendToken = await response.text(); // Extract token from response
 
-      console.log(`****** backendToken: ${backendToken}`);
-
       if (backendToken) {
         req.session.jwtToken = backendToken;
       }
