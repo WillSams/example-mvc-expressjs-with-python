@@ -11,8 +11,31 @@ const jsonReader = async (filepath, callback) => {
   }
 };
 
+const dropAllConstraints = async (knex, tableName) => {
+  const tableExists = await knex.schema.hasTable(tableName);
+  if (tableExists) {
+    const constraintQuery = `
+      SELECT conname 
+      FROM pg_constraint 
+      WHERE conrelid = (
+        SELECT oid 
+        FROM pg_class 
+        WHERE relname = '${tableName}'
+      );
+    `;
+
+    const result = await knex.raw(constraintQuery);
+    const constraintNames = result.rows.map((row) => row.conname);
+    for (const constraintName of constraintNames) {
+      await knex.raw(`ALTER TABLE ${tableName} DROP CONSTRAINT IF EXISTS "${constraintName}";`);
+    }
+  }
+};
+
 const seedData = async (knex, tableName, data) => {
-  await knex(tableName).del();
+  if (tableName == 'rooms') await dropAllConstraints(knex, 'reservations');
+  const databaseExists = await knex.schema.hasTable(tableName);
+  if (databaseExists) await knex(tableName).del();
   return await knex(tableName).insert(data);
 };
 
@@ -24,7 +47,7 @@ const injectTables = async (knex, tableName) => {
     });
     await seedData(knex, tableName, data);
   } catch (ex) {
-    console.log(`Json file read failed: ${ex.message}`);
+    console.log(`Seed failed: ${ex.message}`);
   }
 };
 
