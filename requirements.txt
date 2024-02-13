@@ -1,6 +1,6 @@
 ariadne==0.21
 black==23.10.1
-fastapi==0.108.0
+fastapi==0.109.1
 flake8==6.1.0
 httpx==0.26.0
 psycopg2-binary==2.9.9
