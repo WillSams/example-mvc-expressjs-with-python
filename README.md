@@ -1,5 +1,7 @@
 # Acme Hotel Example - Express, FastAPI, Sqlalchemy
 
+**ABANDONED** on February 13, 2024, please see newer version in the **main** branch.
+
 This example contains a frontend and backend:
 
 - The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
