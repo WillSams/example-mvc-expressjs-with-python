@@ -145,8 +145,8 @@ serverless.yaml
 
 **/node_modules
 
-*-lock.json
-!tests/package-lock.json
+package-lock.json
+!frontend/package-lock.json
 
 # Logs
 *.log
@@ -271,4 +271,3 @@ frontend/**/*.css.map
 
 coverage/
 
-!frontend/package-lock.json  # we need this one
