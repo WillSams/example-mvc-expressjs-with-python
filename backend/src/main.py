@@ -1,19 +1,16 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from datetime import timedelta
 
-import api.utils as utils
+from fastapi import Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+import api.utils as utils
+from auth import create_access_token, verify_user
 from routes import create_app
 from routes.about import AboutRoute
 from routes.graphql import GraphqlRoute
-
-from auth import verify_user, create_access_token
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
-
 
 app = create_app(AboutRoute(), GraphqlRoute())
 
