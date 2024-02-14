@@ -2,6 +2,8 @@
 
 **JavaScript, Expressjs, MVC frontend, Memcached, Python, FastAPI, GraphQL, AsyncPG, Postgres
 
+[![Validate application](https://github.com/WillSams/example-mvc-expressjs-with-python/actions/workflows/pr-validate.yml/badge.svg)](https://github.com/WillSams/example-mvc-expressjs-with-python/actions/workflows/pr-validate.yml)
+
 This example contains a frontend and backend:
 
 - The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
