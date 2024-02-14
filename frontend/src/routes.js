@@ -1,3 +1,5 @@
+import rateLimit from 'express-rate-limit';
+
 import home_controller from './controllers/home.js';
 import reservation_controller from './controllers/reservation.js';
 import { protectRoute } from './middleware/authentication.js';
