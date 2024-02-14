@@ -43,17 +43,15 @@ jobs:
   unit-test-frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Install Node.js via nvm
-      uses: dcodeIO/setup-node-nvm@master
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        node-version: node
-        node-mirror: https://nodejs.org/download/v8-canary/
+        node-version: '20.x'
 
     - name: Test with Jest
       run: |
         cd frontend
-        npm ci --legacy-peer-deps
-        npm run test:coverage
+        npm ci && npm run test:coverage
 
