@@ -48,11 +48,12 @@ jobs:
     - name: Install Node.js via nvm
       uses: dcodeIO/setup-node-nvm@master
       with:
-        node-version: node
+        node-version: lts/*
         node-mirror: https://nodejs.org/download/v8-canary/
 
     - name: Test with Jest
       run: |
-        cd frontend && yarn install --ignore-engines
+        cd frontend
+        npm ci && npm rebuild node-sass
         npm run test:coverage
 
