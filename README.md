@@ -8,7 +8,7 @@ This example contains a frontend and backend:
 - The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
 - The backend is a [GraphQL API](https://graphql.org) providing the ability to create, delete, and list reservatios plus available rooms for a given date range.
 
-A [React/FastAPI] version of this same idea can be found [here](https://github.com/WillSams/acme-hotel-react-fastapi-tortoiseorm/) version of this same idea.
+React [Javascript](https://github.com/WillSams/example-js-react-with-python) and  [Typescript](https://github.com/WillSams/example-ts-react-with-python) versions of this same idea are available.
 
 Booked reservations are listed via the API. Each reservation request were processed in the order provided as if they were real-time requests. The following rules are observed:
 
