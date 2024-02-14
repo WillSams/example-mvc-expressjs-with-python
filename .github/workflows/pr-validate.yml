@@ -53,8 +53,7 @@ jobs:
 
     - name: Test with Jest
       run: |
-        npm i -g node-gyp
-
         cd frontend && npm i
+        npm rebuild node-sass
         npm run test:coverage
 
