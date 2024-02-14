@@ -1,8 +1,7 @@
 from fastapi import APIRouter
 
-from api.models import ApiData
 import api.utils as utils
-
+from api.models import ApiData
 from settings import API_NAME
 
 
@@ -23,7 +22,7 @@ class AboutRoute:
                 response = ApiData(data=data, status=utils.StatusCode.OK)
             except Exception as error:
                 messages = str(error)
-                utils.log_api_error(__name__, messages)
+                utils.log_api_message(__name__, messages)
                 data = {"success": False, "errors": messages}
                 response = ApiData(data=data, status=utils.StatusCode.BAD_REQUEST)
             return response

@@ -28,7 +28,7 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@app.post("/token")
+@app.post(f"/{utils.runtime_environment()}/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     username = form_data.username
     password = form_data.password
@@ -61,9 +61,12 @@ def main() -> None:
 
     import uvicorn
 
-    host = "0.0.0.0"
+    host = "localhost"
     port = int(utils.api_port())
-    uvicorn.run("main:app", host=host, port=port, reload=utils.is_debug())
+    if utils.is_debug():
+        uvicorn.run("main:app", host=host, port=port, reload=True)
+    else:  # note: file logging occurs when not in debug mode
+        uvicorn.run(app, host=host, port=port)
 
     if utils.is_debug():
         utils.logger_exit_message()

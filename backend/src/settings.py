@@ -2,11 +2,9 @@ from os import getenv
 
 API_NAME = "Acme Hotel Reservation - Graphql API"
 API_PORT = getenv("RESERVATION_PORT") or 80
-ENV = getenv("ENV") or "development"
-DB_URL = (
-    getenv("PG_URL")
-    or f"postgresql+psycopg2://postgres:postgres@localhost:8082/hotel_{ENV}"
-)
+ENV = getenv("ENV")
+DB_URL = getenv("PG_URL")
+
 IS_DEBUG = bool(int(getenv("IS_DEBUG", "0"))) or False
 
 TOKEN_EXPIRATION_IN_MINUTES = 30

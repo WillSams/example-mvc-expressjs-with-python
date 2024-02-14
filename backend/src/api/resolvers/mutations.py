@@ -1,18 +1,13 @@
 from typing import Any, Dict, cast
 
-from api import DbSession
-from api.helpers import (
-    calculate_total_charge,
-    check_date_validity,
-    get_room,
-    is_room_available,
-)
-from api.models import Reservation
-
 import api.utils as utils
+from api import DbSession
+from api.helpers import check_date_validity
+from api.resolvers.data import create_reservation, delete_reservation
 
 
-def create_reservation_resolver(obj, info, input: dict) -> Dict[str, Any]:
+async def create_reservation_resolver(obj, info, input: dict) -> Dict[str, Any]:
+    db = await DbSession()
     try:
         room_id = cast(str, input.get("room_id"))
         checkin_date = utils.convert_to_local_date_from_str(
@@ -24,54 +19,30 @@ def create_reservation_resolver(obj, info, input: dict) -> Dict[str, Any]:
 
         check_date_validity(checkin_date, checkout_date)
 
-        room = get_room(room_id)
-
-        available = is_room_available(
-            room_id=room_id, checkin_date=checkin_date, checkout_date=checkout_date
-        )
-
-        if not available["success"]:
-            for message in available["errors"]:
-                utils.log_api_error(__name__, message)
-            return {"success": False, "errors": available["errors"]}
-
-        daily_rate = cast(int, room.daily_rate)
-        total_charge = calculate_total_charge(daily_rate, checkin_date, checkout_date)
-
-        reservation = Reservation(
-            room_id=room_id,
-            checkin_date=checkin_date,
-            checkout_date=checkout_date,
-            total_charge=total_charge,
-        )
-
-        db = DbSession()
-        db.add(reservation)
-        db.commit()
-
-        return {"success": True, "reservation": reservation.to_dict()}
-
+        result = await create_reservation(db, room_id, checkin_date, checkout_date)
+        return result
     except ValueError as error:
-        utils.log_api_error(__name__, str(error))
+        utils.log_api_message(__name__, str(error))
         return {"success": False, "errors": [str(error)]}
+    except Exception as e:
+        error = f"Unexpected error: {str(e)}"
+        utils.log_api_message(__name__, f"Unexpected error: {error}")
+        return {"success": False, "errors": [error]}
+    finally:
+        await db.close()
 
 
-def delete_reservation_resolver(obj, info, reservationId: int) -> Dict[str, Any]:
-    reservation_id = reservationId
+async def delete_reservation_resolver(obj, info, reservationId: int) -> Dict[str, Any]:
+    db = await DbSession()
     try:
-        db = DbSession()
-        reservation = (
-            db.query(Reservation).filter(Reservation.id == reservation_id).first()
-        )
-        if reservation:
-            db.delete(reservation)
-            db.commit()
-
-            data = reservation.to_dict()
-            return {"success": True, "errors": [], "reservation": data}
-        else:
-            errors = ["Room not found"]
-            return {"success": False, "errors": errors, "room": None}
-    except Exception as error:
-        utils.log_api_error(__name__, str(error))
-        return {"success": False, "errors": [str(error)], "room": None}
+        result = await delete_reservation(db, reservationId)
+        return result
+    except ValueError as error:
+        utils.log_api_message(__name__, str(error))
+        return {"success": False, "errors": [str(error)]}
+    except Exception as e:
+        error = f"Unexpected error: {str(e)}"
+        utils.log_api_message(__name__, f"Unexpected error: {error}")
+        return {"success": False, "errors": [error]}
+    finally:
+        await db.close()

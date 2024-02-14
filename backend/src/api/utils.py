@@ -1,10 +1,10 @@
-from fastapi import status
-
-from enum import Enum
-from datetime import datetime, timezone
 import inspect
 import logging
+from datetime import datetime, timezone
+from enum import Enum
 from typing import cast
+
+from fastapi import status
 
 from settings import API_NAME, API_PORT, DB_URL, ENV, IS_DEBUG
 
@@ -20,11 +20,11 @@ def is_debug() -> bool:
 
 
 def runtime_environment() -> str:
-    return ENV
+    return str(ENV)
 
 
 def database_host() -> str:
-    return DB_URL
+    return str(DB_URL)
 
 
 def convert_to_local_date(dt_utc: datetime) -> datetime:
@@ -55,9 +55,9 @@ def setup_file_logger() -> None:
     Logger.info(start_message)
 
 
-def log_api_error(module_name: str, message: str) -> None:
+def log_api_message(module_name: str, message: str) -> None:
     caller = get_calling_function_name()
-    Logger.info(f"{module_name}.{caller} error(s):\n\t{message}")
+    Logger.info(f"{module_name}.{caller} message(s):\n\t{message}")
 
 
 def logger_exit_message() -> None:

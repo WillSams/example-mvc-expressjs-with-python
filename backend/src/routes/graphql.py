@@ -1,27 +1,26 @@
 import json
 
-from fastapi import APIRouter, Request, Response
-
-from ariadne.asgi import GraphQL
 from ariadne import (
+    ObjectType,
     load_schema_from_path,
     make_executable_schema,
     snake_case_fallback_resolvers,
-    ObjectType,
 )
+from ariadne.asgi import GraphQL
+from fastapi import APIRouter, Request, Response
 
+import api.utils as utils
 from api.models import ApiData
 from api.resolvers.mutations import (
     create_reservation_resolver,
     delete_reservation_resolver,
 )
 from api.resolvers.queries import (
-    get_reservation_resolver,
     get_all_reservations_resolver,
     get_all_rooms_resolver,
     get_available_rooms_resolver,
+    get_reservation_resolver,
 )
-import api.utils as utils
 
 query = ObjectType("Query")
 query.set_field("getReservation", get_reservation_resolver)
@@ -57,7 +56,7 @@ class GraphqlRoute:
                 response = ApiData(data=inner_data, status=utils.StatusCode.OK)
             except Exception as error:
                 messages = str(error)
-                utils.log_api_error(__name__, messages)
+                utils.log_api_message(__name__, messages)
                 data = {"success": False, "errors": messages}
                 response = ApiData(data=data, status=utils.StatusCode.BAD_REQUEST)
             return response

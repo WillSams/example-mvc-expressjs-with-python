@@ -1,12 +1,30 @@
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker, declarative_base
+import asyncpg
+from asyncpg.pool import Pool
 
-from settings import DB_URL
+from api.utils import log_api_message
+from settings import DB_URL, ENV
 
-# Create the engine and metada
-engine = create_engine(DB_URL)
-metadata = MetaData()
 
-DbSession = sessionmaker(bind=engine)
-Base = declarative_base(metadata=metadata)
-metadata.create_all(engine)
+class DummyPool:
+    async def close(self):
+        pass
+
+    async def fetch(self, *args, **kwargs):
+        pass
+
+    async def fetchval(self, *args, **kwargs):
+        pass
+
+
+async def DbSession() -> Pool:
+    if ENV == "test":
+        # see the a mock pool implemented in specs/resolvers/__init__.py
+        return DummyPool()
+
+    try:
+        pool = await asyncpg.create_pool(DB_URL)
+        return pool
+    except Exception as e:
+        message = f"Error initializing database connection: {e}"
+        log_api_message(__name__, message)
+        raise

@@ -14,11 +14,7 @@ const index = async (req, res) => {
   if (req.url.includes('/home?success')) {
     reservations = await getListOfReservations(jwtToken);
   } else {
-    reservations = await cache.getOrSet(
-      req.url,
-      jwtToken,
-      getListOfReservations
-    );
+    reservations = await cache.getOrSet(req.url, jwtToken, getListOfReservations);
   }
   res.render('index', { title: 'HOME - RESERVATIONS', reservations });
 };
