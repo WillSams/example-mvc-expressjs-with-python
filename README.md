@@ -1,7 +1,6 @@
 # Hotel Reservation Example - JavaScript/Python
 
-**JavaScript, Expressjs, MVC frontend, Memcached, Python, FastAPI, GraphQL, AsyncPG, Postgres
-
+**JavaScript, Expressjs, MVC frontend, Memcached, Python, FastAPI, GraphQL, AsyncPG, Postgres**
 [![Validate application](https://github.com/WillSams/example-mvc-expressjs-with-python/actions/workflows/pr-validate.yml/badge.svg)](https://github.com/WillSams/example-mvc-expressjs-with-python/actions/workflows/pr-validate.yml)
 
 This example contains a frontend and backend:
