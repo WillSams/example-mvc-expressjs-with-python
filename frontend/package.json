@@ -5,7 +5,8 @@
     "lint": "./node_modules/.bin/eslint src/**/*.js --ignore-pattern 'src/public/'",
     "format": "./node_modules/.bin/prettier src/**/*.js --single-quote --trailing-comma es5 --write",
     "watch": "./node_modules/nodemon/bin/nodemon.js src/main.js",
-    "test": "ENV=test jest --maxWorkers=2 --forceExit --coverage"
+    "test": "ENV=test jest --maxWorkers=2",
+    "test:coverage": "ENV=test jest --forceExit --coverage"
   },
   "dependencies": {
     "connect-memjs": "^0.2.1",
