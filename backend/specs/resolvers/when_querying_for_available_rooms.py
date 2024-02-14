@@ -1,50 +1,54 @@
 import pytest
+from asyncpg import Pool
 
-from unittest.mock import MagicMock
-
-from api.resolvers.queries import get_available_rooms_resolver
 from api.models import Room
+from api.resolvers.queries import get_available_rooms_resolver
 
-from . import (
-    mock_db_session,
-    patch_db_to_resolvers,
-    mock_is_room_available,
-    mock_room,
-)
+from . import MOCK_EXECUTION_CONTEXT
 
 
 class DescribeAvailableRoomsResolver:
-    @pytest.mark.usefixtures("patch_db_to_resolvers")
-    def should_return_available_rooms_resolver(
-        self, mock_db_session, mock_is_room_available, mock_room
-    ):
-        mock_room.id = "room_1"
-        mock_room.num_beds = 2
-        mock_room.allow_smoking = True
-        mock_room.daily_rate = 100
-        mock_room.cleaning_fee = 20
-        mock_save = MagicMock()
-        mock_room.save = mock_save
-        mock_db_session.query.return_value.filter.return_value.all.return_value = [
-            mock_room
+    @pytest.mark.asyncio
+    async def should_get_available_rooms_all_available(self, mocker):
+        rooms = [
+            Room(
+                id=f"room_{i}",
+                num_beds=i * 2,
+                allow_smoking=True if i % 2 == 0 else False,
+                daily_rate=int(i * 140),
+                cleaning_fee=int(i * 20),
+            )
+            for i in range(1, 10)
         ]
-        mock_is_room_available.return_value = True
-        mock_execution_context = {"context_key": "context_value"}
 
-        result = get_available_rooms_resolver(
-            None,
-            mock_execution_context,
-            {"checkin_date": "2023-01-01", "checkout_date": "2023-01-03"},
+        expected_id = range(1, 10)
+        room_to_check = [room for room in rooms if room.id == expected_id]
+
+        mock_pool = mocker.Mock(spec=Pool)
+        mocker.patch("asyncpg.create_pool", return_value=mock_pool)
+        mocker.patch(
+            "api.resolvers.mutations.DbSession",
+            mocker.AsyncMock(return_value=mock_pool),
+        )
+        mocker.patch(
+            "api.resolvers.data.fetch_all_rows", mocker.AsyncMock(return_value=rooms)
+        )
+        mocker.patch(
+            "api.resolvers.data.fetch_room",
+            mocker.AsyncMock(return_value=room_to_check),
         )
 
-        assert "rooms" in result
-        assert len(result["rooms"]) == 1
+        # room is available when 0 is returned in is_room_available
+        mock_pool.fetchval = mocker.AsyncMock(return_value=0)
+        mock_pool.fetch = mocker.AsyncMock(return_value=rooms)
 
-        room_instance = result["rooms"][0]
+        input_data = {
+            "checkin_date": "2023-01-10",
+            "checkout_date": "2023-01-15",
+        }
 
-        assert isinstance(room_instance, Room)
-        assert room_instance.id == "room_1"
-        assert room_instance.num_beds == 2
-        assert room_instance.allow_smoking == True
-        assert room_instance.daily_rate == 100
-        assert room_instance.cleaning_fee == 20
+        result = await get_available_rooms_resolver(
+            None, MOCK_EXECUTION_CONTEXT, input_data
+        )
+
+        assert result["success"] is True

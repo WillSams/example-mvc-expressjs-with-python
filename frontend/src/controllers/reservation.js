@@ -1,17 +1,7 @@
 import cache from '../cache.js';
-import {
-  GENERAL_ERROR,
-  REQUIRED_FIELDS_VALIDATION_FAILED,
-} from '../constants.js';
-import {
-  cancelReservation,
-  getListOfRoomIds,
-  makeReservation,
-} from '../graphql.js';
-import {
-  handleCancellationResult,
-  handleReservationResult,
-} from '../results.js';
+import { GENERAL_ERROR, REQUIRED_FIELDS_VALIDATION_FAILED } from '../constants.js';
+import { cancelReservation, getListOfRoomIds, makeReservation } from '../graphql.js';
+import { handleCancellationResult, handleReservationResult } from '../results.js';
 import utils from '../utils.js';
 
 //POST /reservation/create/
@@ -41,10 +31,7 @@ const createReservation = async (req, res) => {
 //DELETE /reservation/:id/delete/
 const deleteReservation = async (req, res) => {
   try {
-    const result = await cancelReservation(
-      req.session.jwtToken,
-      parseInt(req.params.id)
-    );
+    const result = await cancelReservation(req.session.jwtToken, parseInt(req.params.id));
     const { success, redirectUrl } = handleCancellationResult(result);
     if (success) cache.invalidate('/home');
     res.redirect(redirectUrl);

@@ -1,19 +1,16 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from datetime import timedelta
 
-import api.utils as utils
+from fastapi import Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+import api.utils as utils
+from auth import create_access_token, verify_user
 from routes import create_app
 from routes.about import AboutRoute
 from routes.graphql import GraphqlRoute
-
-from auth import verify_user, create_access_token
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
-
 
 app = create_app(AboutRoute(), GraphqlRoute())
 
@@ -28,7 +25,7 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@app.post("/token")
+@app.post(f"/{utils.runtime_environment()}/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     username = form_data.username
     password = form_data.password
@@ -61,9 +58,12 @@ def main() -> None:
 
     import uvicorn
 
-    host = "0.0.0.0"
+    host = "localhost"
     port = int(utils.api_port())
-    uvicorn.run("main:app", host=host, port=port, reload=utils.is_debug())
+    if utils.is_debug():
+        uvicorn.run("main:app", host=host, port=port, reload=True)
+    else:  # note: file logging occurs when not in debug mode
+        uvicorn.run(app, host=host, port=port)
 
     if utils.is_debug():
         utils.logger_exit_message()

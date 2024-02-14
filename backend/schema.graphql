@@ -1,6 +1,6 @@
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }
 
 type Room {
@@ -31,15 +31,15 @@ input ReservationInput {
 }
 
 type ReservationResult {
-    success: Boolean!
-    errors: [String]
-    reservation: Reservation
+  success: Boolean!
+  errors: [String]
+  reservation: Reservation
 }
 
 type ReservationsResult {
-    success: Boolean!
-    errors: [String]
-    reservations: [Reservation]
+  success: Boolean!
+  errors: [String]
+  reservations: [Reservation]
 }
 
 type RoomsResult {
@@ -49,13 +49,13 @@ type RoomsResult {
 }
 
 type Query {
-    getReservation(roomId: String!): ReservationResult!
-    getAllReservations: ReservationsResult!
-    getAllRooms: RoomsResult!
-    getAvailableRooms(input: AvailableRoomInput!): RoomsResult!
+  getReservation(roomId: String!): ReservationResult!
+  getAllReservations: ReservationsResult!
+  getAllRooms: RoomsResult!
+  getAvailableRooms(input: AvailableRoomInput!): RoomsResult!
 }
 
 type Mutation {
-    createReservation(input: ReservationInput!): ReservationResult!
-    deleteReservation(reservationId: Int!): ReservationResult!  
+  createReservation(input: ReservationInput!): ReservationsResult!
+  deleteReservation(reservationId: Int!): ReservationsResult!
 }

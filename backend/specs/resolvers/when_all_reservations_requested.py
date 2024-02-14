@@ -1,53 +1,43 @@
+from datetime import datetime
+
 import pytest
+from asyncpg import Pool
 
-from api.resolvers.queries import get_all_reservations_resolver
 from api.models import Reservation
+from api.resolvers.queries import get_all_reservations_resolver
 
-from . import mock_db_session, patch_db_to_resolvers
+from . import MOCK_EXECUTION_CONTEXT
 
 
 class DescribeAllReservationsResolver:
-    @pytest.mark.usefixtures("patch_db_to_resolvers")
-    def should_return_all_reservations_resolver(
-        self,
-        mock_db_session,
-    ):
-        mock_reservations = [
+    @pytest.mark.asyncio
+    async def should_return_all_reservations(self, mocker):
+        reservations = [
             Reservation(
                 id=1,
                 room_id="room_1",
-                checkin_date="2023-01-01",
-                checkout_date="2023-01-03",
+                checkin_date=datetime(2023, 1, 1, 5, 0),
+                checkout_date=datetime(2023, 1, 1, 5, 0),
+                total_charge=100,
             ),
             Reservation(
                 id=2,
                 room_id="room_2",
-                checkin_date="2023-01-05",
-                checkout_date="2023-01-07",
+                checkin_date=datetime(2023, 1, 1, 5, 0),
+                checkout_date=datetime(2023, 1, 1, 5, 0),
+                total_charge=200,
             ),
         ]
 
-        mock_db_session.query.return_value.all.return_value = mock_reservations
-        mock_execution_context = {"context_key": "context_value"}
+        mock_pool = mocker.AsyncMock(spec=Pool)
+        mocker.patch("asyncpg.create_pool", return_value=mock_pool)
+        mocker.patch(
+            "api.resolvers.queries.DbSession", mocker.AsyncMock(return_value=mock_pool)
+        )
+        mock_pool.fetch = mocker.AsyncMock(return_value=reservations)
 
-        result = get_all_reservations_resolver(None, mock_execution_context)
+        result = await get_all_reservations_resolver(None, MOCK_EXECUTION_CONTEXT)
 
         assert "reservations" in result
-        assert result["reservations"] == [
-            {
-                "id": 1,
-                "room_id": "room_1",
-                "checkin_date": "2023-01-01",
-                "checkout_date": "2023-01-03",
-                "total_charge": None,
-            },
-            {
-                "id": 2,
-                "room_id": "room_2",
-                "checkin_date": "2023-01-05",
-                "checkout_date": "2023-01-07",
-                "total_charge": None,
-            },
-        ]
-
-        mock_db_session.query.assert_called_once_with(Reservation)
+        assert len(result["reservations"]) == 2
+        assert result["reservations"] == reservations

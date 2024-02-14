@@ -18,5 +18,5 @@ export const up = async (knex) => {
 };
 
 export const down = async (knex) =>
-  knex.schema.dropTable("reservations").dropTable("rooms");
+  knex.schema.dropTableIfExists("reservations").dropTableIfExists("rooms");
 

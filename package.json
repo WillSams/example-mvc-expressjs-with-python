@@ -4,21 +4,18 @@
         "dev:db-baseline": "cd db && npm run refresh && npm run seed",
         "dev:frontend": "cd frontend && npm run watch",
         "dev:backend": "cd backend && python src/main.py",
-        "lint": "eslint frontend --ignore-pattern 'public/' --ignore-pattern 'build/'",
-        "test:backend": "cd backend && ./run_tests.sh",
+        "format:frontend": "cd frontend && npm run format",
+        "format:backend": "cd backend && ./scripts/format.sh",
+        "lint:frontend": "cd frontend && npm run lint",
+        "lint:backend": "cd backend && ./scripts/lint.sh",
+        "test:backend": "cd backend && ./scripts/test.sh",
         "test:frontend": "cd frontend && npm run test",
-        "prepare": "husky install"       
+        "prepare": "husky install",
+        "clean": "node clean.js"
     },
     "dependencies": {
-        "concurrently": "^6.5.1"
-    },
-    "devDependencies": {
-        "eslint": "^7.26.0",
+        "concurrently": "^6.5.1",
         "husky": "^8.0.3",
-        "prettier": "^3.1.1"
-    },
-    "prettier": {
-        "singleQuote": true,
-        "trailingComma": "es5"
+        "rimraf": "^5.0.5"
     }
 }

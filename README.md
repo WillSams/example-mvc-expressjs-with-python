@@ -1,11 +1,13 @@
-# Acme Hotel Example - Express, FastAPI, Sqlalchemy
+# Hotel Reservation Example - JavaScript/Python
+
+**JavaScript, Expressjs, MVC frontend, Memcached, Python, FastAPI, GraphQL, AsyncPG, Postgres
 
 This example contains a frontend and backend:
 
 - The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
 - The backend is a [GraphQL API](https://graphql.org) providing the ability to create, delete, and list reservatios plus available rooms for a given date range.
 
-For a solution that is more scalable than this, please checkout my [React-FastAPI-TortoiseORM](https://github.com/WillSams/acme-hotel-react-fastapi-tortoiseorm/) version of this same idea.
+A [React/FastAPI] version of this same idea can be found [here](https://github.com/WillSams/acme-hotel-react-fastapi-tortoiseorm/) version of this same idea.
 
 Booked reservations are listed via the API. Each reservation request were processed in the order provided as if they were real-time requests. The following rules are observed:
 
@@ -89,24 +91,11 @@ The below are optional but highly recommended:
 
 ## Getting Started
 
-First, we'll need to set up our environment variables.  You can do this by either:
-
-* Manually exporting the necessary environment variables in your shell.  These are listed in the [`./envrc.example`](./envrc.example) file.
-
-or
-
-* Use optionally use **Direnv**.
-
-```bash
-cp .envrc.example .envrc
-direnv allow
-```
-
-For exporting environment variables, [Python Dotenv](https://pypi.org/project/python-dotenv/) is an option as well.  However, **Direnv** is preferred as it isn't dependent on Python therefore can be used in other use-cases.
+First, we'll need to set up our environment variables.  You can do this by either any of the methods mentioned in [/tools/ENV.md](./tools/ENV.md) but I recommend using [Direnv](https://direnv.net/).
 
 ### Install Python Packages
 
-Execute the following in your terminal:
+Next, execute the following in your terminal:
 
 ```bash
 python -m venv venv
@@ -126,12 +115,11 @@ npm i               # install the packages needed for project
 
 ### Create the database
 
-Finally, let's create and seed the databases and our Reservations and Rooms tables:
+Finally, let's create and seed the database and our Reservations and Rooms tables:
 
 ```bash
-# Create the databases and seed them
-NODE_ENV=development | ./create_db.sh && npm run refresh && npm run seed
-NODE_ENV=test | ./create_db.sh && npm run refresh
+# Create the database and seed it
+NODE_ENV=development | npm run refresh && npm run seed
 ```
 
 During development, you can just execute `npm run dev:db-baseline` to refresh the database back to the original seed data.
@@ -163,23 +151,35 @@ The backend tests organized for improved readability and comprehension. These te
 
 To run these tests, simply execute `npm run test:backend`.
 
-![text](./frontend/src/public/img/backend_tests_example.png) 
+![text](./frontend/src/public/img/backend_tests_example.png)
 
-## TODO
+## Containerization
 
-- The UI's flow is not great, goal was to get a UI up and running for testing the backend. So, changes to implement are:
-    - Make caching middleware.  Also, it's not as clean as I would like.
-    - When making a new reservation, validation should happen in place and not redirect to a modal.
-- Enforce typing:
-    - JavaScript -> I'll eventually introduce [JSDoc](https://jsdoc.app/) as an alternative to TypeScript.
-    - Python -> I need to sprinkle more type annotations.  Also, I need to evaluate if usage of *Union* and *Optional* are more helpful that they look.
-- Add GitHub Action for validating pull requests
-- Add GitHub Actions for deployment to AWS
-- Add Pulumi or Amazon CDK artifacts for managing AWS infrastructure supporting our code.
-    - Deploy frontend as [ECS](https://aws.amazon.com/ecs/) service.
-    - Deploy backend as [Lambda](https://aws.amazon.com/lambda/) function.
-- Add Cypress for testing the UI
-- Use Strawberry or Apollo instead of Ariadne
+### Building the Backend Container
+
+```bash
+docker build backend/. -t acme-hotel-example-backend:latest \
+    --build-arg RESERVATION_PORT="80" \
+    --build-arg ENV="${ENV}" \
+    --build-arg IS_DEBUG="${IS_DEBUG}" \
+    --build-arg SECRET_KEY="$SECRET_KEY" \
+    --build-arg REFRESH_SECRET_KEY="$REFRESH_SECRET_KEY" \
+    --build-arg PG_URL="$PG_URL"
+
+# finally, to run a named container
+docker run --name backend-dev -p 8000:80 acme-hotel-example-backend`
+```
+
+To verify the environment variables set, you can execute the following on the named container by:
+
+```bash
+CONTAINER_ID=$(docker ps -qf "name=backend-dev" -n 1)
+
+# this will display the container's environment variables in console
+docker exec $CONTAINER_ID printenv   
+```
+
+If you need to re-create the container with the same name, do **docker rm <container-name>** (i.e., backend-dev) first.
 
 ## License
 
