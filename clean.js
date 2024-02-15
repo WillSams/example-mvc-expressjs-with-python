@@ -9,7 +9,7 @@ const clean = () => {
 
   fs.rmSync("./frontend/node_modules", { recursive: true, force: true });
   fs.rmSync("./frontend/coverage", { recursive: true, force: true });
-  fs.rmSync("./frontend/package-lock.json", { recursive: true, force: true });
+  //fs.rmSync("./frontend/package-lock.json", { recursive: true, force: true });
 
   fs.rmSync("./backend/.pytest_cache/", { recursive: true, force: true });
   fs.rmSync("./backend/.coverage", { recursive: true, force: true });
