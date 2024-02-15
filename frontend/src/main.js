@@ -6,6 +6,8 @@ import nodeSassMiddleware from 'node-sass-middleware';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import rateLimiter from './middleware/rateLimiter.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -28,6 +30,8 @@ app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
+
+app.use(rateLimiter);
 
 import session from 'express-session';
 import MemcachedStoreFactory from 'connect-memjs';
