@@ -1,15 +1,8 @@
-import rateLimit from 'express-rate-limit';
-
 import home_controller from './controllers/home.js';
 import reservation_controller from './controllers/reservation.js';
 import { protectRoute } from './middleware/authentication.js';
 import { authSession } from './middleware/session.js';
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per window
-  message: "Too many requests from this IP, please try again later"
-});
+import limiter from './middleware/rateLimiter.js';
 
 const routes = app => {
   [
