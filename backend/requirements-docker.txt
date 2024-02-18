@@ -4,6 +4,6 @@ asyncpg==0.29.0
 fastapi==0.109.1
 httpx==0.26.0
 pydantic==2.5.3
-python-multipart==0.0.7
+python-multipart==0.0.9
 python-jose==3.3.0
 uvicorn==0.25.0
