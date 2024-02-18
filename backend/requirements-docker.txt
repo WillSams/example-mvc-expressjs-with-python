@@ -1,4 +1,4 @@
-ariadne==0.21
+ariadne==0.22
 asyncio==3.4.3
 asyncpg==0.29.0
 fastapi==0.109.1
