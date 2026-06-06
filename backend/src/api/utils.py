@@ -32,8 +32,7 @@ def convert_to_local_date(dt_utc: datetime) -> datetime:
 
 
 def convert_to_local_date_from_str(date_str: str) -> datetime:
-    dt_utc = datetime.strptime(date_str, "%Y-%m-%d")
-    return dt_utc.astimezone(timezone.utc).replace(tzinfo=None)
+    return datetime.strptime(date_str, "%Y-%m-%d")
 
 
 def get_calling_function_name() -> str:

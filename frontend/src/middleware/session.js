@@ -1,15 +1,18 @@
 const authSession = async (req, res, next) => {
   if (!req.session.jwtToken) {
     try {
-      // If the token is not in the session, or it has expired, get a new one
       const response = await fetch(`${process.env.RESERVATION_API}/token`, { method: 'post' });
-      const backendToken = await response.text(); // Extract token from response
+      console.log(`[authSession] token response status: ${response.status}`);
+      const backendToken = await response.text();
 
       if (backendToken) {
         req.session.jwtToken = backendToken;
+        console.log('[authSession] token stored in session');
+      } else {
+        console.warn('[authSession] token response was empty');
       }
     } catch (error) {
-      console.error('Error fetching token from backend:', error);
+      console.error('[authSession] error fetching token:', error.message);
     }
   }
 

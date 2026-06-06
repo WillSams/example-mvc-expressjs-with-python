@@ -1,4 +1,4 @@
-FROM python:3.8.3
+FROM python:3.10.20
 
 ARG RESERVATION_PORT=80
 ARG ENV

@@ -10,8 +10,8 @@ class Room(BaseModel):
     id: str
     num_beds: int
     allow_smoking: bool
-    daily_rate: int
-    cleaning_fee: int
+    daily_rate: float
+    cleaning_fee: float
 
 
 class Reservation(BaseModel):
@@ -19,7 +19,7 @@ class Reservation(BaseModel):
     room_id: str
     checkin_date: datetime.datetime
     checkout_date: datetime.datetime
-    total_charge: int
+    total_charge: float
 
 
 class ApiData(BaseModel):
