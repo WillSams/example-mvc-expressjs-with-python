@@ -2,17 +2,17 @@ export const up = async (knex) => {
   return knex.schema
     .createTable("rooms", (table) => {
       table.string("id").primary().unique();
-      table.integer("num_beds");
-      table.boolean("allow_smoking");
-      table.integer("daily_rate");
-      table.integer("cleaning_fee");
+      table.integer("num_beds").notNullable();
+      table.boolean("allow_smoking").notNullable();
+      table.double("daily_rate").notNullable();
+      table.double("cleaning_fee").notNullable();
     })
     .createTable("reservations", (table) => {
-      table.increments("id").primary();
-      table.string("room_id").references("rooms.id");
-      table.datetime("checkin_date");
-      table.datetime("checkout_date");
-      table.integer("total_charge");
+      table.bigIncrements("id").primary();
+      table.string("room_id").notNullable().references("rooms.id");
+      table.date("checkin_date").notNullable();
+      table.date("checkout_date").notNullable();
+      table.double("total_charge").notNullable();
       table.unique(["room_id", "checkin_date", "checkout_date"]);
     });
 };

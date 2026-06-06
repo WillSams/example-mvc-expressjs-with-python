@@ -20,10 +20,14 @@ const createReservation = async (req, res) => {
     });
     const { success, redirectUrl } = handleReservationResult(result);
 
-    if (success) cache.invalidate('/home');
+    if (success)
+      Promise.all([
+        cache.invalidate({ url: '/home' }),
+        cache.invalidate({ url: '/reservation/new' }),
+      ]).catch(() => {});
     res.redirect(redirectUrl);
   } catch (error) {
-    //console.log(`ReservationController::createReservation: ${error}`);
+    //console.log(`ReservationController::createReservation: ${error}`)
     res.redirect(`/home?success=false&message=${GENERAL_ERROR}`);
   }
 };
@@ -33,17 +37,21 @@ const deleteReservation = async (req, res) => {
   try {
     const result = await cancelReservation(req.session.jwtToken, parseInt(req.params.id));
     const { success, redirectUrl } = handleCancellationResult(result);
-    if (success) cache.invalidate('/home');
+    if (success)
+      Promise.all([
+        cache.invalidate({ url: '/home' }),
+        cache.invalidate({ url: '/reservation/new' }),
+      ]).catch(() => {});
     res.redirect(redirectUrl);
   } catch (error) {
-    //console.log(`ReservationController::deleteReservation: ${error}`);
+    //console.log(`ReservationController::deleteReservation: ${error}`)
     res.redirect(`/home?success=false&message=${GENERAL_ERROR}`);
   }
 };
 
 //GET /reservation/new/
 const newReservation = async (req, res) => {
-  const roomIds = await getListOfRoomIds(req.session.jwtToken);
+  const roomIds = await cache.getOrSet('/reservation/new', req.session.jwtToken, getListOfRoomIds);
   res.render('reservation/new', { title: 'NEW - MAKE RESERVATION', roomIds });
 };
 
