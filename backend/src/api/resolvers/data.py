@@ -20,8 +20,9 @@ async def create_reservation(
 
     room_result = await fetch_room(db, room_id)
     room = room_result["room"][0]
-    daily_rate = room.daily_rate
-    total_charge = calculate_total_charge(daily_rate, checkin_date, checkout_date)
+    total_charge = calculate_total_charge(
+        room.daily_rate, room.cleaning_fee, checkin_date, checkout_date
+    )
 
     reservation_insert_query = """
             INSERT INTO reservations
@@ -46,7 +47,7 @@ async def is_room_available(
     db, room_id: str, checkin_date: datetime, checkout_date: datetime
 ) -> Dict[str, Any]:
     try:
-        if checkin_date < datetime.now():
+        if checkin_date.date() < datetime.now().date():
             message: str = INVALID_DATE_CHECK_IN
             utils.log_api_message(__name__, message)
             return {"success": False, "errors": [message]}

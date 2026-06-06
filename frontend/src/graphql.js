@@ -12,13 +12,6 @@ const createReservation = gql`
     createReservation(input: $input) {
       success
       errors
-      reservation {
-        id
-        room_id
-        checkin_date
-        checkout_date
-        total_charge
-      }
     }
   }
 `;
