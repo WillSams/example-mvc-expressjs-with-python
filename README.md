@@ -1,6 +1,7 @@
 # Hotel Reservation MVC Example - JavaScript/Python
 
 **JavaScript, Expressjs, MVC frontend, Memcached, Python, FastAPI, GraphQL, AsyncPG, Postgres**
+
 [![Validate application](https://github.com/WillSams/example-mvc-expressjs-with-python/actions/workflows/pr-validate.yml/badge.svg)](https://github.com/WillSams/example-mvc-expressjs-with-python/actions/workflows/pr-validate.yml)
 
 This example contains a frontend and backend:
@@ -8,7 +9,18 @@ This example contains a frontend and backend:
 - The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
 - The backend is a [GraphQL API](https://graphql.org) providing the ability to create, delete, and list reservations plus available rooms for a given date range.
 
-React [Javascript](https://github.com/WillSams/example-js-react-with-python) and  [Typescript](https://github.com/WillSams/example-ts-react-with-python) versions of this same idea are available.
+React [Javascript](https://github.com/WillSams/example-js-react-with-python) version of this same idea is available.
+
+**Why MVC with server-side rendering?**
+
+A server-rendered MVC frontend is a reasonable choice when:
+
+- **SEO matters** — pages are fully rendered on the server so crawlers see complete HTML without executing JavaScript.
+- **Session security** — the JWT token never touches the browser; it lives in a server-side session backed by Memcached, reducing XSS exposure.
+- **Simplicity** — for a CRUD-heavy app with no real-time requirements, a full SPA adds build complexity, client-side state management, and hydration overhead that isn't justified.
+- **Progressive enhancement** — the UI works even if the client has JavaScript disabled.
+
+The tradeoff is that every interaction requires a server round-trip. For this workload (hotel reservations, not a chat app) that's an acceptable cost. The React versions of this project demonstrate how the same backend serves a SPA frontend when richer client-side interactivity is needed.
 
 Booked reservations are listed via the API. Each reservation request were processed in the order provided as if they were real-time requests. The following rules are observed:
 
