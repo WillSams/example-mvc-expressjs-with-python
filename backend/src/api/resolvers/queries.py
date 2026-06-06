@@ -7,9 +7,8 @@ from api.resolvers.data import fetch_all_rows, fetch_available_rooms, fetch_rese
 
 
 async def get_reservation_resolver(obj, info, id) -> Dict[str, Any]:
+    db = await DbSession()
     try:
-        db = await DbSession()
-
         result = await fetch_reservation(db, id)
         return result
     except ValueError as error:
