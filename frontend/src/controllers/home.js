@@ -10,12 +10,17 @@ const about = async (_req, res) => {
 const index = async (req, res) => {
   let reservations = [];
 
-  const jwtToken = req.session.jwtToken;
-  if (req.url.includes('/home?success')) {
-    reservations = await getListOfReservations(jwtToken);
-  } else {
-    reservations = await cache.getOrSet(req.url, jwtToken, getListOfReservations);
+  try {
+    const jwtToken = req.session.jwtToken;
+    if (req.url.includes('/home?success')) {
+      reservations = await getListOfReservations(jwtToken);
+    } else {
+      reservations = await cache.getOrSet(req.url, jwtToken, getListOfReservations);
+    }
+  } catch (error) {
+    console.error('[home] failed to load reservations:', error.message);
   }
+
   res.render('index', { title: 'HOME - RESERVATIONS', reservations });
 };
 
