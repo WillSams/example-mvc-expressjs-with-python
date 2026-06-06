@@ -10,14 +10,13 @@ from auth import create_access_token, verify_user
 from routes import create_app
 from routes.about import AboutRoute
 from routes.graphql import GraphqlRoute
-from settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from settings import ACCESS_TOKEN_EXPIRE_MINUTES, ALLOWED_ORIGINS
 
 app = create_app(AboutRoute(), GraphqlRoute())
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -62,11 +61,9 @@ def main() -> None:
     port = int(utils.api_port())
     if utils.is_debug():
         uvicorn.run("main:app", host=host, port=port, reload=True)
-    else:  # note: file logging occurs when not in debug mode
-        uvicorn.run(app, host=host, port=port)
-
-    if utils.is_debug():
         utils.logger_exit_message()
+    else:
+        uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":

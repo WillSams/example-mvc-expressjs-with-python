@@ -43,7 +43,8 @@ describe('Reservation Controller', () => {
 
       await reservationController.createReservation(req, res);
 
-      expect(invalidateSpy).toHaveBeenCalledWith('/home');
+      expect(invalidateSpy).toHaveBeenCalledWith({ url: '/home' });
+      expect(invalidateSpy).toHaveBeenCalledWith({ url: '/reservation/new' });
 
       const successMsg = `/home?success=true&message=${CREATE_RESERVATION_SUCCESS}`;
       expect(res.redirect).toHaveBeenCalledWith(successMsg);
@@ -81,7 +82,8 @@ describe('Reservation Controller', () => {
 
       await reservationController.deleteReservation(req, res);
 
-      expect(invalidateSpy).toHaveBeenCalledWith('/home');
+      expect(invalidateSpy).toHaveBeenCalledWith({ url: '/home' });
+      expect(invalidateSpy).toHaveBeenCalledWith({ url: '/reservation/new' });
 
       const successMsg = `/home?success=true&message=${DELETE_RESERVATION_SUCCESS}`;
       expect(res.redirect).toHaveBeenCalledWith(successMsg);
@@ -105,13 +107,14 @@ describe('Reservation Controller', () => {
   describe('newReservation', () => {
     it('should render the new reservation template with roomIds', async () => {
       const req = { session };
-      const res = { render: jest.fn(), };
+      const res = { render: jest.fn() };
 
       const mockRoomIds = [1, 2, 3];
-      getListOfRoomIds.mockResolvedValueOnce(mockRoomIds);
+      const getOrSetSpy = jest.spyOn(cache, 'getOrSet').mockResolvedValueOnce(mockRoomIds);
 
       await reservationController.newReservation(req, res);
 
+      expect(getOrSetSpy).toHaveBeenCalledWith('/reservation/new', session.jwtToken, getListOfRoomIds);
       expect(res.render).toHaveBeenCalledWith('reservation/new', {
         title: 'NEW - MAKE RESERVATION',
         roomIds: mockRoomIds,

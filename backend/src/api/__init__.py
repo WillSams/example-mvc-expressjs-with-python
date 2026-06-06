@@ -9,6 +9,9 @@ class DummyPool:
     async def close(self):
         pass
 
+    async def execute(self, *args, **kwargs):
+        pass
+
     async def fetch(self, *args, **kwargs):
         pass
 

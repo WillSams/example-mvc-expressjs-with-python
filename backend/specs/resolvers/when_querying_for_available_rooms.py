@@ -31,7 +31,8 @@ class DescribeAvailableRoomsResolver:
             mocker.AsyncMock(return_value=mock_pool),
         )
         mocker.patch(
-            "api.resolvers.data.fetch_all_rows", mocker.AsyncMock(return_value=rooms)
+            "api.resolvers.data.fetch_all_rows",
+            mocker.AsyncMock(return_value={"success": True, "rooms": rooms}),
         )
         mocker.patch(
             "api.resolvers.data.fetch_room",
