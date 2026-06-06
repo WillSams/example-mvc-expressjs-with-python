@@ -6,7 +6,7 @@
 This example contains a frontend and backend:
 
 - The frontend is an [Express](https://expressjs.com/) application using an MVC architecture and [Pug](https://pugjs.org/api/getting-started.html) + [Bootstrap4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) for view templating.
-- The backend is a [GraphQL API](https://graphql.org) providing the ability to create, delete, and list reservatios plus available rooms for a given date range.
+- The backend is a [GraphQL API](https://graphql.org) providing the ability to create, delete, and list reservations plus available rooms for a given date range.
 
 React [Javascript](https://github.com/WillSams/example-js-react-with-python) and  [Typescript](https://github.com/WillSams/example-ts-react-with-python) versions of this same idea are available.
 
@@ -35,28 +35,27 @@ ACCESS_TOKEN=$(curl -s -X POST \
   -H 'accept: application/json' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'grant_type=password&username=example-user&password=example-user' \
-  'http://localhost:8080/token' | jq -r '.access_token')
+  "http://localhost:${RESERVATION_PORT}/development/token" | jq -r '.access_token')
 
 # List all existing booked reservations
-curl http://localhost:$API_PORT/development/graphql \
+curl http://localhost:${RESERVATION_PORT}/development/graphql \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    -d '{"query": "query { getAllReservations { reservations { room_id checkin_date checkout_date  } } }"}'
+    -d '{"query": "query { getAllReservations { reservations { id room_id checkin_date checkout_date total_charge } } }"}'
 
 # Create a new reservation
-# Note: if there is an overlap, you'll see a 
+# Note: if there is an overlap, you'll see a
 #   'Reservation dates overlap with an existing reservation' error message
-# To see the aforementioned error, run this mutation a multiple times
-curl http://localhost:$API_PORT/development/graphql \
+curl http://localhost:${RESERVATION_PORT}/development/graphql \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    -d '{ "query": "mutation { createReservation( input: { room_id: \"91754a14-4885-4200-a052-e4042431ffb8\", checkin_date: \"2023-12-31\", checkout_date: \"2024-01-02\"  }) { success errors reservation { id room_id checkin_date checkout_date total_charge } } }" }'
+    -d '{"query": "mutation { createReservation(input: { room_id: \"room_1\", checkin_date: \"2027-01-01\", checkout_date: \"2027-01-05\" }) { success errors } }"}'
 
-# List Available Rooms for a given date range
-curl http://localhost:$API_PORT/development/graphql \
+# List available rooms for a given date range
+curl http://localhost:${RESERVATION_PORT}/development/graphql \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    -d '{"query": "query { getAvailableRooms( input: { checkin_date: \"2023-12-31\", checkout_date: \"2024-01-02\" }) { success errors rooms { id num_beds allow_smoking daily_rate cleaning_fee } } }" }'
+    -d '{"query": "query { getAvailableRooms(input: { checkin_date: \"2027-01-01\", checkout_date: \"2027-01-05\" }) { success errors rooms { id num_beds allow_smoking daily_rate cleaning_fee } } }"}'
 ```
 
 **Open API UI Usage**:
@@ -81,13 +80,14 @@ Navigate to [http://localhost:$API_PORT/docs](http://localhost:$API_PORT/docs).
 
 To run the service, you will need to install the following tools.
 
-* [Python](https://www.python.org/downloads/)
+* [Python 3.10](https://www.python.org/downloads/) (or via [pyenv](https://github.com/pyenv/pyenv))
 * [NodeJS](https://nodejs.org/en/)
 * [Docker](https://www.docker.com/)
 
 The below are optional but highly recommended:
 
 * [nvm](https://github.com/nvm-sh/nvm) - Used to manage NodeJS versions.
+* [pyenv](https://github.com/pyenv/pyenv) - Used to manage Python versions.
 * [Direnv](https://direnv.net/) - Used to manage environment variables.
 
 ## Getting Started
@@ -99,9 +99,11 @@ First, we'll need to set up our environment variables.  You can do this by eithe
 Next, execute the following in your terminal:
 
 ```bash
+pyenv install 3.10.20       # if not already installed
+pyenv local 3.10.20
 python -m venv venv
-source venv/bin/activate
-pip install --upgrade pip 
+source venv/bin/activate    # for Windows: source venv/Scripts/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -116,14 +118,13 @@ npm i               # install the packages needed for project
 
 ### Create the database
 
-Finally, let's create and seed the database and our Reservations and Rooms tables:
+Finally, let's create and seed the database:
 
 ```bash
-# Create the database and seed it
-NODE_ENV=development | npm run refresh && npm run seed
+npm run dev:db-baseline
 ```
 
-During development, you can just execute `npm run dev:db-baseline` to refresh the database back to the original seed data.
+This rolls back any existing migrations, runs the migration to create the `rooms` and `reservations` tables, then seeds them with sample data. Re-run it any time to reset to the original seed data.
 
 ## Development
 
