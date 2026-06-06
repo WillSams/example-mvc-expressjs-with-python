@@ -270,4 +270,5 @@ dist
 frontend/**/*.css.map
 
 coverage/
+claude/
 

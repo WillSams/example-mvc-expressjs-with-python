@@ -20,8 +20,9 @@ async def create_reservation(
 
     room_result = await fetch_room(db, room_id)
     room = room_result["room"][0]
-    daily_rate = room.daily_rate
-    total_charge = calculate_total_charge(daily_rate, checkin_date, checkout_date)
+    total_charge = calculate_total_charge(
+        room.daily_rate, room.cleaning_fee, checkin_date, checkout_date
+    )
 
     reservation_insert_query = """
             INSERT INTO reservations
@@ -36,21 +37,17 @@ async def create_reservation(
     return reservations
 
 
-async def delete_reservation(db, reservation_id: str) -> Dict[str, Any]:
-    reservation = await fetch_reservation(db, reservation_id)
-    if reservation:
-        await db.execute("DELETE FROM reservations WHERE id = $1", reservation_id)
-        return await fetch_all_rows(db, Reservation)
-    else:
-        errors = ["Reservation not found"]
-        return {"success": False, "errors": errors, "reservations": None}
+async def delete_reservation(db, reservation_id: int) -> Dict[str, Any]:
+    await fetch_reservation(db, reservation_id)
+    await db.execute("DELETE FROM reservations WHERE id = $1", reservation_id)
+    return await fetch_all_rows(db, Reservation)
 
 
 async def is_room_available(
     db, room_id: str, checkin_date: datetime, checkout_date: datetime
 ) -> Dict[str, Any]:
     try:
-        if checkin_date < datetime.now():
+        if checkin_date.date() < datetime.now().date():
             message: str = INVALID_DATE_CHECK_IN
             utils.log_api_message(__name__, message)
             return {"success": False, "errors": [message]}
@@ -80,11 +77,8 @@ async def fetch_all_rows(db, entity_type) -> Dict[str, Any]:
     table_name = entity_type.__name__.lower() + "s"
     query = f"SELECT * FROM {table_name}"
     rows = await db.fetch(query)
-    if rows:
-        entities = [entity_type(**dict(row)) for row in rows]
-        return {"success": True, f"{table_name}": entities}
-    else:
-        raise ValueError("No reserved rooms found")
+    entities = [entity_type(**dict(row)) for row in rows] if rows else []
+    return {"success": True, f"{table_name}": entities}
 
 
 async def fetch_by_id(db, entity_type, id) -> Dict[str, Any]:
@@ -99,11 +93,14 @@ async def fetch_by_id(db, entity_type, id) -> Dict[str, Any]:
 
 
 async def fetch_available_rooms(db, checkin_date, checkout_date) -> Dict[str, Any]:
-    rooms = await fetch_all_rows(db, Room)
+    result = await fetch_all_rows(db, Room)
+    rooms = result.get("rooms", [])
     available_rooms = [
         room
         for room in rooms
-        if await is_room_available(db, room.id, checkin_date, checkout_date)
+        if (await is_room_available(db, room.id, checkin_date, checkout_date))[
+            "success"
+        ]
     ]
     return {"success": True, "rooms": available_rooms}
 
@@ -116,7 +113,7 @@ async def fetch_room(db, room_id: str) -> Room:
         raise ValueError(f"Room with id {room_id} not found")
 
 
-async def fetch_reservation(db, reservation_id: id):
+async def fetch_reservation(db, reservation_id: int):
     result = await fetch_by_id(db, Reservation, id=reservation_id)
     if result["success"]:
         return result

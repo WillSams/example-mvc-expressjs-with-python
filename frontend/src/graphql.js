@@ -12,13 +12,6 @@ const createReservation = gql`
     createReservation(input: $input) {
       success
       errors
-      reservation {
-        id
-        room_id
-        checkin_date
-        checkout_date
-        total_charge
-      }
     }
   }
 `;
@@ -50,7 +43,7 @@ const cancelReservation = async (token = '', reservationId) => {
 const getListOfReservations = async (token = '') => {
   const payload = { query: getExistingReservations };
   const result = await backendRequest(token, payload);
-  const reservations = result.getAllReservations.reservations;
+  const reservations = result.getAllReservations.reservations ?? [];
   const sorted = reservations.sort((a, b) => a.checkin_date.localeCompare(b.checkin_date));
   return sorted;
 };
