@@ -1,13 +1,13 @@
-import { gql, request } from 'graphql-request';
+import { request } from 'graphql-request';
 
 //queries
-const getExistingReservations = gql`
+const getExistingReservations = `
   query { getAllReservations { reservations { id room_id checkin_date checkout_date  } } }
 `;
-const getRoomIds = gql`query { getAllRooms { rooms { id } } }`;
+const getRoomIds = `query { getAllRooms { rooms { id } } }`;
 
 //mutations
-const createReservation = gql`
+const createReservation = `
   mutation createReservation($input: ReservationInput!) {
     createReservation(input: $input) {
       success
@@ -16,7 +16,7 @@ const createReservation = gql`
   }
 `;
 
-const deleteReservation = gql`
+const deleteReservation = `
   mutation deleteReservation($reservationId: Int!) {
     deleteReservation(reservationId: $reservationId) {
       success
