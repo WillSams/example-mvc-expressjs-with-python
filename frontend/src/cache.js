@@ -27,14 +27,14 @@ const getOrSet = async (url, token, func, { cacheClient = client } = {}) => {
   try {
     const content = await getFromCache(cacheKey, cacheClient);
     if (content) return content;
-    else {
-      const data = await func(token);
-      setCache(cacheKey, data, cacheClient);
-      return data;
-    }
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    console.warn(`[cache] get failed for ${cacheKey}, falling back to live fetch:`, err.message);
+    return func(token);
   }
+
+  const data = await func(token);
+  setCache(cacheKey, data, cacheClient);
+  return data;
 };
 
 const invalidate = ({ url = '', cacheClient = client }) => {

@@ -10,13 +10,6 @@ from . import MOCK_EXECUTION_CONTEXT
 
 
 class DescribeDeleteReservationResolver:
-    def find_by_id(self, reservation_id):
-        return [
-            reservation
-            for reservation in self.reservations
-            if reservation.id != reservation_id
-        ]
-
     @pytest.mark.asyncio
     async def should_delete_existing_reservation(self, mocker):
         original_reservations = [
@@ -60,7 +53,7 @@ class DescribeDeleteReservationResolver:
         assert result["reservations"] == expected_reservations
 
     @pytest.mark.asyncio
-    async def test_should_give_reservation_not_found(self, mocker):
+    async def should_give_reservation_not_found(self, mocker):
         result = await delete_reservation_resolver(
             None, MOCK_EXECUTION_CONTEXT, reservationId=999
         )
