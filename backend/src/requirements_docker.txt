@@ -1,6 +1,6 @@
 ariadne==1.0.1
 asyncpg==0.31.0
-black==26.3.1
+black==26.5.1
 fastapi==0.136.3
 flake8==7.3.0
 httpx==0.28.1
