@@ -1,6 +1,6 @@
 ariadne==1.0.1
 asyncpg==0.31.0
-black==23.10.1
+black==26.5.1
 fastapi==0.136.3
 flake8==7.3.0
 httpx==0.28.1
@@ -10,8 +10,8 @@ pydantic==2.13.4
 pytest==9.0.3
 pytest-asyncio==1.4.0
 pytest-cov==7.1.0
-pytest-mock==3.12.0
+pytest-mock==3.15.1
 python-jose==3.5.0
 python-multipart==0.0.32
 SQLAlchemy==2.0.50
-uvicorn==0.34.0
+uvicorn==0.49.0
