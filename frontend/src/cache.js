@@ -4,12 +4,26 @@ import utils from './utils.js';
 const client = memjs.Client.create();
 const cacheKeyPrefix = process.env.CACHE_KEY_PREFIX;
 
+// Cap how long we wait on memcached so an unreachable or misbehaving cache
+// degrades to a live fetch instead of hanging the request.
+const CACHE_TIMEOUT_MS = 500;
+
+const withTimeout = (promise, ms, label) =>
+  Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+
 const setCache = (cacheKey, data, cacheClient) => {
-  cacheClient.set(cacheKey, JSON.stringify(data), { expires: process.env.CACHE_EXPIRATION });
+  cacheClient
+    .set(cacheKey, JSON.stringify(data), { expires: process.env.CACHE_EXPIRATION })
+    .catch((err) => console.warn(`[cache] set failed for ${cacheKey}:`, err.message));
 };
 
 const getFromCache = (cacheKey, cacheClient) => {
-  return new Promise((resolve, reject) => {
+  const get = new Promise((resolve, reject) => {
     cacheClient.get(cacheKey, (err, content) => {
       if (err) reject(err);
       else {
@@ -19,6 +33,7 @@ const getFromCache = (cacheKey, cacheClient) => {
       }
     });
   });
+  return withTimeout(get, CACHE_TIMEOUT_MS, `cache get for ${cacheKey}`);
 };
 
 const getOrSet = async (url, token, func, { cacheClient = client } = {}) => {
@@ -28,7 +43,9 @@ const getOrSet = async (url, token, func, { cacheClient = client } = {}) => {
     const content = await getFromCache(cacheKey, cacheClient);
     if (content) return content;
   } catch (err) {
-    console.warn(`[cache] get failed for ${cacheKey}, falling back to live fetch:`, err.message);
+    console.warn(
+      `[cache] unavailable (${err.message}); serving live results without caching`
+    );
     return func(token);
   }
 

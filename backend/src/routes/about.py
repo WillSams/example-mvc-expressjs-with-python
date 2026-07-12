@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from fastapi import APIRouter
 
 import api.utils as utils
@@ -18,7 +20,7 @@ class AboutRoute:
                 desc = """This is a GraphQL API that allows you to create and
                 list reservations as well as the ability to list available rooms
                 for a given date range."""
-                data = {"name": f"{API_NAME}", "description": desc}
+                data: Dict[str, Any] = {"name": f"{API_NAME}", "description": desc}
                 response = ApiData(data=data, status=utils.StatusCode.OK)
             except Exception as error:
                 messages = str(error)
