@@ -7,4 +7,4 @@ npm run lint:backend
 npm run format:frontend
 npm run lint:frontend
 
-git add .
+git update-index --again

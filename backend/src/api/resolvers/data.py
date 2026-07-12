@@ -105,7 +105,7 @@ async def fetch_available_rooms(db, checkin_date, checkout_date) -> Dict[str, An
     return {"success": True, "rooms": available_rooms}
 
 
-async def fetch_room(db, room_id: str) -> Room:
+async def fetch_room(db, room_id: str) -> Dict[str, Any]:
     result = await fetch_by_id(db, Room, id=room_id)
     if result["success"]:
         return result

@@ -51,8 +51,8 @@ class GraphqlRoute:
         async def graphql_handler(request: Request) -> ApiData:
             try:
                 result = await graphql_app.handle_request(request)
-                result = result.body.decode()
-                inner_data = json.loads(result).get("data", {})
+                body = bytes(result.body).decode()
+                inner_data = json.loads(body).get("data", {})
                 response = ApiData(data=inner_data, status=utils.StatusCode.OK)
             except Exception as error:
                 messages = str(error)

@@ -25,9 +25,9 @@ async def create_reservation_resolver(obj, info, input: dict) -> Dict[str, Any]:
         utils.log_api_message(__name__, str(error))
         return {"success": False, "errors": [str(error)]}
     except Exception as e:
-        error = f"Unexpected error: {str(e)}"
-        utils.log_api_message(__name__, f"Unexpected error: {error}")
-        return {"success": False, "errors": [error]}
+        message = f"Unexpected error: {str(e)}"
+        utils.log_api_message(__name__, message)
+        return {"success": False, "errors": [message]}
     finally:
         await db.close()
 
@@ -41,8 +41,8 @@ async def delete_reservation_resolver(obj, info, reservationId: int) -> Dict[str
         utils.log_api_message(__name__, str(error))
         return {"success": False, "errors": [str(error)]}
     except Exception as e:
-        error = f"Unexpected error: {str(e)}"
-        utils.log_api_message(__name__, f"Unexpected error: {error}")
-        return {"success": False, "errors": [error]}
+        message = f"Unexpected error: {str(e)}"
+        utils.log_api_message(__name__, message)
+        return {"success": False, "errors": [message]}
     finally:
         await db.close()
