@@ -4,7 +4,7 @@ black==26.5.1
 fastapi==0.141.1
 flake8==7.3.0
 httpx==0.28.1
-isort==8.0.1
+isort==9.0.1
 mypy==1.14.1
 psycopg2-binary==2.9.12
 pydantic==2.13.5
