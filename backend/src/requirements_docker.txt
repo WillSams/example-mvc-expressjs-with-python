@@ -14,5 +14,5 @@ pytest-cov==7.1.0
 pytest-mock==3.16.0
 python-jose==3.5.0
 python-multipart==0.0.32
-SQLAlchemy==2.1.4
+SQLAlchemy==2.1.6
 uvicorn==0.54.0
